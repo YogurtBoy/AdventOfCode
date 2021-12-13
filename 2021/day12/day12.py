@@ -1,84 +1,120 @@
 import time
 start_time = time.time()
 
-# f = open("puses_example.txt", "r")
-f = open("puses.txt", "r")
+# f = open("caves_tiny.txt", "r")
+# f = open("caves_small.txt", "r")
+f = open("caves.txt", "r")
 if f:
     print("Successfully opened data...")
 
-def energizePuses(octos: list, y: int, x: int):
-    itin = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
-    for ii in range(len(itin)):
-        yT = itin[ii][0] + y
-        xT = itin[ii][1] + x
-        if not yT or not xT or yT == (len(octos) - 1) or xT == (len(octos[0]) - 1):
-            continue
+class Tunnel:
+    def __init__(self):
+        self.caves = ['', '']
+        self.branches = []
+    
+    def isStart(self):
+        if self.caves[0] == 'start' or self.caves[1] == 'start':
+            return True
         else:
-            octos[yT][xT] += 1
-            if octos[yT][xT] == 10:
-                octos = energizePuses(octos, yT, xT)
+            return False
+    
+    def isEnd(self):
+        if self.caves[0] == 'end' or self.caves[1] == 'end':
+            return True
+        else:
+            return False
+    
+    def isConnection(self, cave):
+        if cave == self.caves[0] or cave == self.caves[1]:
+            return True
+        else:
+            return False
+    
+    def isOnEndOfRoute(self, routeStr):
+        if self.caves[0][-2] == routeStr[-2] and self.caves[0][-1] == routeStr[-1]:
+            return 0
+        elif self.caves[1][-2] == routeStr[-2] and self.caves[1][-1] == routeStr[-1]:
+            return 1
+        else: 
+            return -1 
 
-    return octos
+    def makeConnection(self, tunnelMap):
+        for ii in range(len(tunnelMap)):
+            if self.isConnection(tunnelMap[ii].caves[0]) and not tunnelMap[ii].isConnection('start'): 
+                self.branches.append(ii)
+            elif self.isConnection(tunnelMap[ii].caves[1]) and not tunnelMap[ii].isConnection('start'):
+                self.branches.append(ii)
+        return self
 
-def tallyFlashes(octos: list):
-    flashes = 0
-    for ii in range(len(octos)):
-        for jj in range(len(octos[0])):
-            if not ii or not jj or ii == (len(octosPlus) - 1) or jj == (len(octosPlus[0]) - 1):
-                continue
-            else:
-                if octos[ii][jj] > 9:
-                    flashes += 1
-                    octos[ii][jj] = 0
+    def printTunnel(self):
+        print(str(self.caves[0]) + " <--> " + str(self.caves[1]))
 
-    return flashes
+def hasTinyCaveBeenVisited(cave, route):
+    if ord(cave[0]) < 97:
+        return False
+    elif route.find(cave) > -1:
+        return True
+    else: 
+        return False
 
+def explore(nel, system, routeList, iDx):
+    for ii in nel.branches:
 
+        cunTun = system[ii]
+        
+        caveIdx = cunTun.isOnEndOfRoute(routeList[iDx])
+        if caveIdx > 0:
+            if not hasTinyCaveBeenVisited(cunTun.caves[0], routeList[iDx]):
+                routeList.insert(iDx + 1, '')
+                routeList[iDx + 1] = routeList[iDx + 1] + routeList[iDx] + cunTun.caves[0]
+                if routeList[iDx + 1].find('end') < 0:
+                    routeList = explore(cunTun, system, routeList, iDx + 1)
+                else:
+                    continue
+        elif caveIdx > -1:
+            if not hasTinyCaveBeenVisited(cunTun.caves[1], routeList[iDx]):
+                routeList.insert(iDx + 1, '')
+                routeList[iDx + 1] = routeList[iDx + 1] + routeList[iDx] + cunTun.caves[1]
+                if routeList[iDx + 1].find('end') < 0:
+                    routeList = explore(cunTun, system, routeList, iDx + 1)
+                else:
+                    continue
+        
+    routeList.pop(iDx)
+    
+    return routeList
 
-octosLame = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-octos = []
-octosPlus = []
-octosPlus.append(octosLame[:])
+# A at 65
+# Z at 90
+# a at 97 
+# z at 122
+
+system = []
 for line in f:
-    line = line.strip()
-    width = []
-    for ii, num in enumerate(line):
-        width.append(int(num))
-    octos.append(width[:])
-    width.insert(0, 0)
-    width.append(0)
-    octosPlus.append(width)
-octosPlus.append(octosLame[:])
+    connection = line.strip().split('-')
+    system.append(Tunnel())
+    system[-1].caves = [connection[0], connection[1]]
+for tun in system:
+    tun = tun.makeConnection(system)
 
-# print(octos)
-# print(octosPlus)
-totalFlashes = 0
-transit = 0
-totSum = 1
-# while transit < 100: # For part 1
-while totSum:
-    totSum = 0
-    print("TRANSIT NUMBER: " + str(transit))
-    for ii in range(len(octosPlus)):
-        for jj in range(len(octosPlus[0])):
-            if not ii or not jj or ii == (len(octosPlus) - 1) or jj == (len(octosPlus[0]) - 1):
-                continue
-            else:
-                octosPlus[ii][jj] += 1
-                if octosPlus[ii][jj] == 10:
-                    octosPlus = energizePuses(octosPlus, ii, jj)
-    totalFlashes += tallyFlashes(octosPlus)
-    # print(totalFlashes)
-    for kk in range(12):
-        print(octosPlus[kk])
-    transit += 1
+routes = []
+for ii in range(len(system)):
+    tun = system[ii]
+    if tun.isStart():
+        routes.append('start')
+        if tun.caves[0] == 'start':
+            routes[-1] = routes[-1] + tun.caves[1]
+        else:
+            routes[-1] = routes[-1] + tun.caves[0]
+        routes = explore(tun, system, routes, len(routes) - 1)
 
-
-    for kk in range(10):
-        totSum += sum(octosPlus[kk + 1])
-
-print(totalFlashes)
-
-print("--- %s seconds ---" % (time.time() - start_time))
-
+practice = 'startHNdcLN'
+# testCave = 'kj'
+# print('BRAP')
+# print(ord(testCave[0]))
+# print(practice.find('kj'))
+# print(hasTinyCaveBeenVisited('jk', practice))
+print(routes)
+print(len(routes))
+            
 
