@@ -51,11 +51,15 @@ class Tunnel:
 
 def hasTinyCaveBeenVisited(cave, route):
     if ord(cave[0]) < 97:
-        return False
+        return 0
     elif route.find(cave) > -1:
-        return True
+        # For part 1 answer, remove everything having to do with this extra if statement and the 'v'
+        if route[0] == 'v':
+            return 1
+        else:
+            return -1
     else: 
-        return False
+        return 0
 
 def explore(nel, system, routeList, iDx):
     for ii in nel.branches:
@@ -64,17 +68,21 @@ def explore(nel, system, routeList, iDx):
         
         caveIdx = cunTun.isOnEndOfRoute(routeList[iDx])
         if caveIdx > 0:
-            if not hasTinyCaveBeenVisited(cunTun.caves[0], routeList[iDx]):
+            if hasTinyCaveBeenVisited(cunTun.caves[0], routeList[iDx]) < 1:
                 routeList.insert(iDx + 1, '')
                 routeList[iDx + 1] = routeList[iDx + 1] + routeList[iDx] + cunTun.caves[0]
+                if hasTinyCaveBeenVisited(cunTun.caves[0], routeList[iDx]) < 0:
+                    routeList[iDx + 1] = 'v' + routeList[iDx + 1]
                 if routeList[iDx + 1].find('end') < 0:
                     routeList = explore(cunTun, system, routeList, iDx + 1)
                 else:
                     continue
         elif caveIdx > -1:
-            if not hasTinyCaveBeenVisited(cunTun.caves[1], routeList[iDx]):
+            if hasTinyCaveBeenVisited(cunTun.caves[1], routeList[iDx]) < 1:
                 routeList.insert(iDx + 1, '')
                 routeList[iDx + 1] = routeList[iDx + 1] + routeList[iDx] + cunTun.caves[1]
+                if hasTinyCaveBeenVisited(cunTun.caves[1], routeList[iDx]) < 0:
+                    routeList[iDx + 1] = 'v' + routeList[iDx + 1]
                 if routeList[iDx + 1].find('end') < 0:
                     routeList = explore(cunTun, system, routeList, iDx + 1)
                 else:
@@ -108,12 +116,6 @@ for ii in range(len(system)):
             routes[-1] = routes[-1] + tun.caves[0]
         routes = explore(tun, system, routes, len(routes) - 1)
 
-practice = 'startHNdcLN'
-# testCave = 'kj'
-# print('BRAP')
-# print(ord(testCave[0]))
-# print(practice.find('kj'))
-# print(hasTinyCaveBeenVisited('jk', practice))
 print(routes)
 print(len(routes))
             
