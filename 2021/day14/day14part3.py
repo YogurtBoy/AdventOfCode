@@ -1,8 +1,8 @@
 import time
 start_time = time.time()
 
-# f = open("chemicals_small.txt", "r")
-f = open("chemicals.txt", "r")
+f = open("chemicals_small.txt", "r")
+# f = open("chemicals.txt", "r")
 if f:
     print("Successfully opened data...")
 
@@ -10,24 +10,6 @@ def updateAlphabet(albet: list, chunk: str) -> list:
     for ii in range(len(chunk) - 1):
         albet[ord(chunk[ii]) - 65] += 1
     return albet
-
-goalSteps = 18
-def eatChunk(abc: list, first, next, depth: int):
-    chunk = first + next
-    for reaction in rules:
-        if reaction.find(chunk) == 0:
-            insertC = reaction[-1]
-            abc[]
-            break
-    depth += 1
-    if depth < goalSteps:
-        abc = eatChunk(abc, chunk[0] + chunk[1], depth)
-    #     abc = eatChunk(abc, chunk[1] + chunk[2], depth)
-    # else:
-    #     # print(time.time() - start_time)
-    #     # print(chunk)
-    #     abc = updateAlphabet(abc, chunk)
-    # return abc
 
 template = ''
 product = []
@@ -39,20 +21,46 @@ for line in f:
         product = line.strip().split(' -> ')
         rules.append(product[0] + product[1])
 
-
 abc = [0]*26
 alb2 = abc[:]
+for ii in range(len(template)):
+    abc[ord(template[ii]) - 65] += 1
+# print(abc)
+
+histo = [0]*len(rules)
+for ii in range(len(template) - 1):
+    for jj, reaction in enumerate(rules):
+        if reaction.find(template[ii] + template[ii + 1]) == 0:
+            histo[jj] += 1
+            break
+
+print(histo)
+
 steps = 0
-while len(template) > 1:
-    print(template)
-    elementChunk = template[0] + template[1] # Take the first two elements in the template
-    template = template[1:] # Remove the first element from the template
-    abc = eatChunk(abc, elementChunk[0], elementChunk[1], 0)
-    print(time.time() - start_time)
-
-
-abc[ord(template) - 65] += 1
+goalSteps = 10
+while steps < goalSteps:
+    histoT = [0]*len(rules)
+    for ii in range(len(rules)):
+        letternum = ord(rules[ii][-1]) - 65
+        abc[letternum] += histo[ii]
+        for jj, rule in enumerate(rules):
+            if rule.find(rules[ii][0] + rules[ii][-1]) == 0:
+                histoT[jj] += histo[ii]
+            elif rule.find(rules[ii][1] + rules[ii][-1]) == 0:
+                histoT[jj] += histo[ii]
+    histo = histoT[:]
+    steps += 1
+    print(histo)
 print(abc)
+                
+
+# Template:     NNCB
+# After step 1: NCNBCHB
+# After step 2: NBCCNBBBCBHCB
+# After step 3: NBBBCNCCNBBNBNBBCHBHHBCHB
+# After step 4: NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB
+
+# print(abc)
 minBin = 100000000
 # min() just returns 0, so find my own min
 for bin in abc:
@@ -60,6 +68,11 @@ for bin in abc:
         minBin = bin
 score = max(abc) - minBin
 print(score)
+
+
+
+
+
 
 
     

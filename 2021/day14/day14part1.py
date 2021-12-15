@@ -45,3 +45,4 @@ while steps < 10:
     steps += 1
 
 print(calculateScore(template))
+print(time.time() - start_time)
