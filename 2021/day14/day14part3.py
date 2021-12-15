@@ -1,15 +1,10 @@
 import time
 start_time = time.time()
 
-f = open("chemicals_small.txt", "r")
-# f = open("chemicals.txt", "r")
+# f = open("chemicals_small.txt", "r")
+f = open("chemicals.txt", "r")
 if f:
     print("Successfully opened data...")
-
-def updateAlphabet(albet: list, chunk: str) -> list:
-    for ii in range(len(chunk) - 1):
-        albet[ord(chunk[ii]) - 65] += 1
-    return albet
 
 template = ''
 product = []
@@ -37,7 +32,7 @@ for ii in range(len(template) - 1):
 print(histo)
 
 steps = 0
-goalSteps = 10
+goalSteps = 40
 while steps < goalSteps:
     histoT = [0]*len(rules)
     for ii in range(len(rules)):
@@ -46,11 +41,12 @@ while steps < goalSteps:
         for jj, rule in enumerate(rules):
             if rule.find(rules[ii][0] + rules[ii][-1]) == 0:
                 histoT[jj] += histo[ii]
-            elif rule.find(rules[ii][1] + rules[ii][-1]) == 0:
+            elif rule.find(rules[ii][-1] + rules[ii][1]) == 0:
                 histoT[jj] += histo[ii]
     histo = histoT[:]
     steps += 1
     print(histo)
+
 print(abc)
                 
 
@@ -61,7 +57,7 @@ print(abc)
 # After step 4: NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB
 
 # print(abc)
-minBin = 100000000
+minBin = 10000000000000000000000000000000
 # min() just returns 0, so find my own min
 for bin in abc:
     if bin < minBin and bin > 0:
