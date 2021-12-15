@@ -11,21 +11,23 @@ def updateAlphabet(albet: list, chunk: str) -> list:
         albet[ord(chunk[ii]) - 65] += 1
     return albet
 
-goalSteps = 40
-def eatChunk(abc: list, chunk: str, depth: int):
+goalSteps = 18
+def eatChunk(abc: list, first, next, depth: int):
+    chunk = first + next
     for reaction in rules:
         if reaction.find(chunk) == 0:
-            chunk = chunk[0] + reaction[-1] + chunk[1]
+            insertC = reaction[-1]
+            abc[]
             break
     depth += 1
     if depth < goalSteps:
         abc = eatChunk(abc, chunk[0] + chunk[1], depth)
-        abc = eatChunk(abc, chunk[1] + chunk[2], depth)
-    else:
-        # print(time.time() - start_time)
-        # print(chunk)
-        abc = updateAlphabet(abc, chunk)
-    return abc
+    #     abc = eatChunk(abc, chunk[1] + chunk[2], depth)
+    # else:
+    #     # print(time.time() - start_time)
+    #     # print(chunk)
+    #     abc = updateAlphabet(abc, chunk)
+    # return abc
 
 template = ''
 product = []
@@ -45,7 +47,7 @@ while len(template) > 1:
     print(template)
     elementChunk = template[0] + template[1] # Take the first two elements in the template
     template = template[1:] # Remove the first element from the template
-    abc = eatChunk(abc, elementChunk, 0)
+    abc = eatChunk(abc, elementChunk[0], elementChunk[1], 0)
     print(time.time() - start_time)
 
 
