@@ -2,8 +2,8 @@ import time
 start_time = time.time()
 
 # f = open("risk_small.txt", "r")
-f = open("risk_small_p2.txt", "r")
-# f = open("risk.txt", "r")
+# f = open("risk_small_p2.txt", "r")
+f = open("risk.txt", "r")
 if f:
     print("Successfully opened data...")
 
@@ -17,7 +17,7 @@ for line in f:
     map.append(width)
 
 def findLowest(paths: list):
-    lowestCost = 10000
+    lowestCost = 100000
     # Might be a problem if two paths have the same cost
     for (x, y), cost in paths.items(): 
         if cost < lowestCost:
@@ -25,11 +25,6 @@ def findLowest(paths: list):
             (lX, lY) = (x, y)
     return (lX, lY)
 
-# def findCost(xy, paths):
-#     for ii, item in enumerate(paths):
-#         if item[0] == xy[0] and item[1] == xy[1]:
-#             return (ii, item[2])
-#     return (-1, 0)
 
 
 # Start by assuming the lowest-risk path is also the shortest
@@ -40,7 +35,6 @@ height = len(map)
 # I think this is just Dijksta's algorithm
 x = y = cost = lastCost = 0
 paths = {(x, y): cost}
-# while x != width - 1 or y != height - 1:
 (x, y) = findLowest(paths)
 while (x, y) != (width - 1, height - 1):
     cost = paths.get((x, y))
@@ -53,7 +47,7 @@ while (x, y) != (width - 1, height - 1):
     if y < height - 1:
         costY = cost + map[y + 1][x]
         inCost = int(paths.get((x, y + 1)) or 0)
-        if inCost > costX or not inCost:
+        if inCost > costY or not inCost:
             paths[(x, y + 1)] = costY
     if cost > lastCost:
         print(cost)
@@ -62,7 +56,8 @@ while (x, y) != (width - 1, height - 1):
     (x, y) = findLowest(paths)
     
 print(cost)
-
+print("FIRST")
+# print(cost[0])
 
 # testPaths = {}
 # testPaths[(0, 1)] = 1
