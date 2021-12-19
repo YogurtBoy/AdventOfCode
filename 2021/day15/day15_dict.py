@@ -53,7 +53,7 @@ while (x, y) != (width - 1, height - 1):
     if y < height - 1:
         costY = cost + map[y + 1][x]
         inCost = int(paths.get((x, y + 1)) or 0)
-        if inCost > costX or not inCost:
+        if inCost > costY or not inCost:
             paths[(x, y + 1)] = costY
     if cost > lastCost:
         print(cost)
