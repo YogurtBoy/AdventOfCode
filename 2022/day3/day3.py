@@ -25,7 +25,6 @@ mishaps = []
 rucksacks = []
 for line in f:
     rucksacks.append(line.strip())
-
     comp_size = int(len(line.strip()) / 2)
     comp_1 = set()
     comp_2 = set()
@@ -42,7 +41,6 @@ for kk in range(int(len(rucksacks)/3)):
     badge_onion = lin1.intersection(lin2, lin3).pop()
     print(badge_onion)
     badges.append(badge_onion)
-
 
 p1_score = score_list(mishaps)
 p2_score = score_list(badges)
