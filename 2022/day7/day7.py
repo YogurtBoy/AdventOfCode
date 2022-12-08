@@ -30,6 +30,8 @@ all_dirs = list(dir_sizes)
 for jj in range(len(all_dirs)):
     if dir_sizes[all_dirs[jj]] <= 100000:
         lil_sizes += dir_sizes[all_dirs[jj]]
+    else: 
+        print(dir_sizes[all_dirs[jj]])
         
 
 print(lil_sizes)
