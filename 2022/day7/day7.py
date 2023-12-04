@@ -54,17 +54,8 @@ all_sizes = []
 for jj in range(len(all_dirs)):
     if dir_sizes[all_dirs[jj]] <= 100000:
         lil_sizes += dir_sizes[all_dirs[jj]]
-
-    all_sizes.append(dir_sizes[all_dirs[jj]])
-
-required_space = dir_sizes['/'] - 40000000
-all_sizes.sort()
-for mm in range(len(all_sizes)):
-    if all_sizes[mm] >= required_space:
-        print(all_sizes[mm])
-        break
-
-
+    else: 
+        print(dir_sizes[all_dirs[jj]])
         
 
 print(lil_sizes)
